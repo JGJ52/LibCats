@@ -1,0 +1,5 @@
+name: LibCats
+version: '1.0.0'
+main: hu.jgj52.libCats.LibCats
+api-version: '1.21'
+authors: [JGJ52]
