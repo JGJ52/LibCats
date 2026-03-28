@@ -6,6 +6,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public abstract class Configuration {
     private final File file;
@@ -13,7 +15,10 @@ public abstract class Configuration {
     public Configuration() {
         file = new File(getPlugin().getDataFolder(), getName() + ".yml");
         reloadConfig();
-        getConfig().setDefaults(YamlConfiguration.loadConfiguration(file));
+        InputStream stream = getPlugin().getResource(getName() + ".yml");
+        if (stream != null) {
+            getConfig().setDefaults(YamlConfiguration.loadConfiguration(new InputStreamReader(stream)));
+        }
         getConfig().options().copyDefaults(true);
         saveConfig();
     }
