@@ -1,6 +1,7 @@
 package hu.jgj52.libCats.Listeners;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -9,20 +10,21 @@ import org.bukkit.event.Listener;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 import static hu.jgj52.libCats.LibCats.plugin;
 
 public class ChatListener implements Listener {
-    private record Context(Runnable runnable, String keyword) {}
+    private record Context(Consumer<Component> consumer, String keyword) {}
     private static final Map<UUID, List<Context>> thingies = new ConcurrentHashMap<>();
-    public static void add(Player player, Runnable runnable) {
+    public static void add(Player player, Consumer<Component> consumer) {
         thingies.computeIfAbsent(player.getUniqueId(), uuid -> new ArrayList<>())
-                .add(new Context(runnable, null));
+                .add(new Context(consumer, null));
     }
 
-    public static void add(Player player, String keyword, Runnable runnable) {
+    public static void add(Player player, String keyword, Consumer<Component> consumer) {
         thingies.computeIfAbsent(player.getUniqueId(), uuid -> new ArrayList<>())
-                .add(new Context(runnable, keyword));
+                .add(new Context(consumer, keyword));
     }
     @EventHandler
     public void onChat(AsyncChatEvent event) {
@@ -31,14 +33,14 @@ public class ChatListener implements Listener {
             List<Context> list = thingies.get(event.getPlayer().getUniqueId());
             for (Context context : list) {
                 String keyword = context.keyword();
-                Runnable run = context.runnable();
+                Consumer<Component> run = context.consumer();
                 if (keyword == null) {
                     event.setCancelled(true);
-                    Bukkit.getScheduler().runTask(plugin, run);
+                    Bukkit.getScheduler().runTask(plugin, () -> run.accept(event.originalMessage()));
                     list.remove(context);
                 } else if (keyword.equals(message)) {
                     event.setCancelled(true);
-                    Bukkit.getScheduler().runTask(plugin, run);
+                    Bukkit.getScheduler().runTask(plugin, () -> run.accept(event.originalMessage()));
                     list.remove(context);
                 }
             }
