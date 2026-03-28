@@ -80,6 +80,9 @@ public abstract class Command implements CommandExecutor, TabCompleter {
 
     public Consumer<CommandSender> notPlayer() { return null; }
 
+    public String getMsg(String msg) {
+        return getPlugin().getConfig().getString("messages." + msg);
+    }
     public String getPermission() {
         return getPlugin().getName().toLowerCase() + ".command." + getName();
     }
