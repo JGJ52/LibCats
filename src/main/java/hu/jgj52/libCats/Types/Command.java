@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -49,7 +50,11 @@ public abstract class Command implements CommandExecutor, TabCompleter {
         }
 
         if (args.length == 1) {
-            return complete(sender, command, s, args);
+            List<String> complete = new ArrayList<>();
+            for (SubCommand subCommand : getSubCommands()) {
+                complete.add(subCommand.getName());
+            }
+            return complete;
         } else if (args.length > 1) {
             for (SubCommand subCommand : getSubCommands()) {
                 if (subCommand.getName().equals(args[0])) {
@@ -81,5 +86,4 @@ public abstract class Command implements CommandExecutor, TabCompleter {
     public Consumer<CommandSender> noPermission() { return null; }
 
     public abstract boolean execute(@NotNull CommandSender sender, org.bukkit.command.@NotNull Command command, @NotNull String s, @NotNull String @NotNull [] args, @Nullable Player player);
-    public abstract List<String> complete(@NotNull CommandSender sender, org.bukkit.command.@NotNull Command command, @NotNull String s, @NotNull String @NotNull [] args);
 }
