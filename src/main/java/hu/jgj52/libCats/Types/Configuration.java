@@ -13,6 +13,7 @@ public abstract class Configuration {
     public Configuration() {
         file = new File(getPlugin().getDataFolder(), getName() + ".yml");
         reloadConfig();
+        getConfig().setDefaults(YamlConfiguration.loadConfiguration(file));
         getConfig().options().copyDefaults(true);
         saveConfig();
     }
