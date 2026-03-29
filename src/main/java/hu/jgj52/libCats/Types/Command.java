@@ -52,7 +52,9 @@ public abstract class Command implements CommandExecutor, TabCompleter {
         if (args.length == 1) {
             List<String> complete = new ArrayList<>();
             for (SubCommand subCommand : getSubCommands()) {
-                complete.add(subCommand.getName());
+                if (subCommand.firstComplete(sender, command, s, args)) {
+                    complete.add(subCommand.getName());
+                }
             }
             return complete;
         } else if (args.length > 1) {
