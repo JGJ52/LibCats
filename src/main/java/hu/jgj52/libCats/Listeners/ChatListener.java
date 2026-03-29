@@ -31,18 +31,22 @@ public class ChatListener implements Listener {
         if (thingies.containsKey(event.getPlayer().getUniqueId())) {
             String message = PlainTextComponentSerializer.plainText().serialize(event.originalMessage());
             List<Context> list = thingies.get(event.getPlayer().getUniqueId());
+            List<Context> toRemove = new ArrayList<>();
             for (Context context : list) {
                 String keyword = context.keyword();
                 Consumer<Component> run = context.consumer();
                 if (keyword == null) {
                     event.setCancelled(true);
                     Bukkit.getScheduler().runTask(plugin, () -> run.accept(event.originalMessage()));
-                    list.remove(context);
+                    toRemove.add(context);
                 } else if (keyword.equals(message)) {
                     event.setCancelled(true);
                     Bukkit.getScheduler().runTask(plugin, () -> run.accept(event.originalMessage()));
-                    list.remove(context);
+                    toRemove.add(context);
                 }
+            }
+            for (Context context : toRemove) {
+                list.remove(context);
             }
         }
     }
