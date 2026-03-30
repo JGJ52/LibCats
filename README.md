@@ -26,7 +26,7 @@ cd LibCats
     <dependency>
         <groupId>hu.jgj52</groupId>
         <artifactId>LibCats</artifactId>
-        <version>1.3.4</version>
+        <version>1.3.5</version>
         <scope>provided</scope>
     </dependency>
 </dependencies>

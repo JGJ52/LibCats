@@ -115,7 +115,7 @@ public abstract class GUI implements InventoryHolder {
         player.openInventory(gui);
     }
 
-    private void reGui(Player player) {
+    public void reGui(Player player) {
         if (!defaultInit()) {
             if (gui == null) {
                 gui = Bukkit.createInventory(this, getSize(), getName());
