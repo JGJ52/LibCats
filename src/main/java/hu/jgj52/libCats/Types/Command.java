@@ -77,7 +77,7 @@ public abstract class Command implements CommandExecutor, TabCompleter {
     public abstract JavaPlugin getPlugin();
     public abstract String getName();
     public abstract List<SubCommand> getSubCommands();
-    public void register() {
+    public final void register() {
         PluginCommand command = getPlugin().getCommand(getName());
         if (command != null) {
             command.setExecutor(this);

@@ -23,11 +23,11 @@ public abstract class Configuration {
         saveConfig();
     }
 
-    public FileConfiguration getConfig() {
+    public final FileConfiguration getConfig() {
         return config;
     }
 
-    public void saveConfig() {
+    public final void saveConfig() {
         try {
             config.save(file);
         } catch (IOException e) {
@@ -35,7 +35,7 @@ public abstract class Configuration {
         }
     }
 
-    public void reloadConfig() {
+    public final void reloadConfig() {
         config = YamlConfiguration.loadConfiguration(file);
     }
 

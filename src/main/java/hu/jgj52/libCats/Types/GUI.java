@@ -110,7 +110,7 @@ public abstract class GUI implements InventoryHolder {
         return components;
     }
 
-    public void open(Player player) {
+    public final void open(Player player) {
         reGui(player);
         player.openInventory(gui);
     }
