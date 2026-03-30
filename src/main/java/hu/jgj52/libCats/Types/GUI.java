@@ -165,8 +165,8 @@ public abstract class GUI implements InventoryHolder {
     public void onDrag(InventoryDragEvent event) {}
     public void onBottomDrag(InventoryDragEvent event) {}
     public abstract int getSize();
-    public String getName() {
-        return getMessage("name");
+    public Component getName() {
+        return getComponent("name");
     }
     public abstract JavaPlugin getPlugin();
 }
