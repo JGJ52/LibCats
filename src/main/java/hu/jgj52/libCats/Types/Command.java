@@ -1,5 +1,8 @@
 package hu.jgj52.libCats.Types;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
@@ -52,8 +55,10 @@ public abstract class Command implements CommandExecutor, TabCompleter {
         if (args.length == 1) {
             List<String> complete = new ArrayList<>();
             for (SubCommand subCommand : getSubCommands()) {
-                if (subCommand.firstComplete(sender, command, s, args)) {
-                    complete.add(subCommand.getName());
+                if (sender.hasPermission(getPermission() + "." + subCommand.getName())) {
+                    if (subCommand.firstComplete(sender, command, s, args)) {
+                        complete.add(subCommand.getName());
+                    }
                 }
             }
             return complete;
@@ -85,6 +90,43 @@ public abstract class Command implements CommandExecutor, TabCompleter {
     public String getMsg(String msg) {
         return getPlugin().getConfig().getString("messages." + msg);
     }
+
+    public Component getComp(String msg) {
+        return MiniMessage.miniMessage().deserialize(getMsg(msg));
+    }
+
+    public Component getComp(String msg, boolean notItalic) {
+        Component component = getComp(msg);
+        if (!component.hasDecoration(TextDecoration.ITALIC) && notItalic) {
+            return component.decoration(TextDecoration.ITALIC, false);
+        }
+        return component;
+    }
+
+    public List<String> getMsgList(String msg) {
+        return getPlugin().getConfig().getStringList("messages." + msg);
+    }
+
+    public List<Component> getCompList(String msg) {
+        List<Component> list = new ArrayList<>();
+        for (String str : getMsgList(msg)) {
+            list.add(MiniMessage.miniMessage().deserialize(str));
+        }
+        return list;
+    }
+
+    public List<Component> getCompList(String msg, boolean notItalic) {
+        List<Component> components = getCompList(msg);
+        int i = 0;
+        for (Component component : components) {
+            if (!component.hasDecoration(TextDecoration.ITALIC) && notItalic) {
+                components.set(i, component.decoration(TextDecoration.ITALIC, false));
+            }
+            i++;
+        }
+        return components;
+    }
+
     public String getPermission() {
         return getPlugin().getName().toLowerCase() + ".command." + getName();
     }
