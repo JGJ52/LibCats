@@ -33,7 +33,9 @@ public abstract class Command implements CommandExecutor, TabCompleter {
             for (SubCommand subCommand : getSubCommands()) {
                 if (subCommand.getName().equals(args[0])) {
                     if (sender.hasPermission(getPermission() + "." + subCommand.getName())) {
-                        return subCommand.execute(sender, command, s, args, notPlayer() != null ? (Player) sender : null);
+                        if (subCommand.firstComplete(sender, command, s, args)) {
+                            return subCommand.execute(sender, command, s, args, notPlayer() != null ? (Player) sender : null);
+                        }
                     }
                 }
             }

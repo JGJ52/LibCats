@@ -26,7 +26,7 @@ cd LibCats
     <dependency>
         <groupId>hu.jgj52</groupId>
         <artifactId>LibCats</artifactId>
-        <version>1.3.6</version>
+        <version>1.3.7</version>
         <scope>provided</scope>
     </dependency>
 </dependencies>
@@ -338,6 +338,7 @@ class YourSubCommand extends SubCommand {
     @Override
     public boolean firstComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] args) {
         // should you be able to tab it from /myCommand <fromHere> (true) or no (false)
+        // also if false nobody can run the subcommand
         return true;
     }
 
