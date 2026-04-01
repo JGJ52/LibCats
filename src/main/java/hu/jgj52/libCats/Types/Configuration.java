@@ -1,5 +1,6 @@
 package hu.jgj52.libCats.Types;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -17,10 +18,27 @@ public abstract class Configuration {
         reloadConfig();
         InputStream stream = getPlugin().getResource(getName() + ".yml");
         if (stream != null) {
-            getConfig().setDefaults(YamlConfiguration.loadConfiguration(new InputStreamReader(stream)));
+            YamlConfiguration defaults = YamlConfiguration.loadConfiguration(new InputStreamReader(stream));
+            YamlConfiguration already = YamlConfiguration.loadConfiguration(file);
+            remove(defaults, already);
+            getConfig().setDefaults(defaults);
         }
         getConfig().options().copyDefaults(true);
         saveConfig();
+    }
+
+    private void remove(ConfigurationSection defaults, ConfigurationSection already) {
+        for (String key : already.getKeys(false)) {
+            if (!already.isConfigurationSection(key)) {
+                defaults.set(key, null);
+            } else {
+                ConfigurationSection defaultSection = defaults.getConfigurationSection(key);
+                ConfigurationSection alreadySection = already.getConfigurationSection(key);
+                if (defaultSection != null && alreadySection != null) {
+                    remove(defaultSection, alreadySection);
+                }
+            }
+        }
     }
 
     public final FileConfiguration getConfig() {
